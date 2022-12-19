@@ -1,0 +1,23 @@
+---
+name: checks
+
+on:
+  push:
+      - main
+  pull_request:
+    branches:
+      - '*'
+
+env:
+  TMPDIR: "/tmp"
+
+jobs:
+  checks:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3.2.0
+      - uses: actions/setup-node@v3
+        with: 16.x
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run pretty-check
