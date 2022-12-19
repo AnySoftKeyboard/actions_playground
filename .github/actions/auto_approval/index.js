@@ -1,7 +1,7 @@
 'use strict';
 
-import core from '@actions/core';
-import github from '@actions/github';
+import * as github from '@actions/github';
+import * as core from '@actions/core';
 
 const main = async () => {
   const token = core.getInput('token');
@@ -12,11 +12,12 @@ const main = async () => {
     .filter((u) => u.length > 0);
   const reviewer_login = core.getInput('review_for');
 
-  const context = github.context;
-  const sender_login = context.payload.pull_request.user.login;
-  const reviewers = context.payload.pull_request.requested_reviewers.map((u) => u.login).filter((u) => u.length > 0);
-  const source_git = context.payload.base.git_url;
-  const target_git = context.payload.head.git_url;
+  const sender_login = github.context.payload.pull_request.user.login;
+  const reviewers = github.context.payload.pull_request.requested_reviewers
+    .map((u) => u.login)
+    .filter((u) => u.length > 0);
+  const source_git = github.context.payload.pull_request.base.git_url;
+  const target_git = github.context.payload.pull_request.head.git_url;
 
   if (source_git == target_git) {
     // required, since we can only get the secret from when running in our repo context.
@@ -28,8 +29,8 @@ const main = async () => {
         const octokit = github.getOctokit(token);
 
         await octokit.rest.pulls.createReview({
-          ...context.repo,
-          pull_number: context.payload.number,
+          ...github.context.repo,
+          pull_number: github.context.payload.number,
           event: 'APPROVE',
         });
       } else {
