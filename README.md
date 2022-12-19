@@ -1,2 +1,2 @@
-# actions_playground
+# GitHub Actions Playground
 Testing GitHub actions
