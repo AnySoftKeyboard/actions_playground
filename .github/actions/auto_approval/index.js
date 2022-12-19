@@ -9,20 +9,29 @@ const main = async () => {
                   .split(',')
                   .map(u => u.trim())
                   .filter(u => u.length > 0);
+  const reviewer_login = core.getInput('review_for');
 
   const context = github.context;
-  const sender_login = context.payload.sender.login;
-  if (users.includes(sender_login)) {
-    core.info(`User '${sender_login}' PR will be approved.`);
-    const octokit = github.getOctokit(token);
-  
-    await octokit.rest.pulls.createReview({
-      ...context.repo,
-      pull_number: context.payload.number,
-      event: 'APPROVE'
-    });
+  const sender_login = context.payload.pull_request.user.login;
+  const reviewers = context.payload.pull_request.requested_reviewers
+                  .map(u => u.login)
+                  .filter(u => u.length > 0);
+  if (reviewers.includes(reviewer_login)) {
+    core.info(`'${reviewer_login}' has been requested to review.`);
+    if (users.includes(sender_login)) {
+      core.info(`User '${sender_login}' PR will be approved.`);
+      const octokit = github.getOctokit(token);
+    
+      await octokit.rest.pulls.createReview({
+        ...context.repo,
+        pull_number: context.payload.number,
+        event: 'APPROVE'
+      });
+    } else {
+      core.info(`User '${sender_login}' is not in allowed list: ${users.join(", ")}. PR will not be auto-approved.`);
+    }
   } else {
-    core.debug(`User '${sender_login}' is not in allowed list: ${users.join(",")}. PR will not be auto-approved.`);
+    core.info(`'${reviewer_login}' is not in list of requested reviewers: ${reviewers.join(", ")}. PR will not be auto-approved.`);
   }
 }
 

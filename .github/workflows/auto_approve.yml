@@ -3,7 +3,7 @@ name: auto-approve-pr
 
 on:
   pull_request:
-    types: [auto_merge_enabled, review_requested]
+    types: [review_requested]
 
 jobs:
   check-for-auto-approval:
@@ -14,3 +14,4 @@ jobs:
         with:
           token: ${{ secrets.GH_ACTIONS_PLAYGROUND_RW }}
           allowed_users: unknown, menny, yes_known
+          review_for: anysoftkeyboard-bot
