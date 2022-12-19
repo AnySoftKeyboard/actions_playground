@@ -1,7 +1,7 @@
 {
   "scripts": {
     "lint": "eslint --ext .js --ext .ts .github",
-    "lint-fix": "eslint --ext .js --ext .ts .github/** --fix",
+    "lint-fix": "eslint --ext .js --ext .ts .github --fix",
     "pretty-check": "prettier --write \".github/**/*.js\" --check",
     "pretty": "prettier --write \".github/**/*.js\""
   },
