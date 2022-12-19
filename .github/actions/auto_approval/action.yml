@@ -7,6 +7,9 @@ inputs:
   token:
     description: "GitHub Token"
     required: true
+  allowed_users:
+    description: "Which users can be auto-approved"
+    required: true
 runs:
   using: 'node16'
   main: 'dist/index.js'
